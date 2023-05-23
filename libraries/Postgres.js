@@ -18,7 +18,7 @@ const knexConfig = {
     },
 };
 
-// postgres://gradeup:@localhost:5432/training
+
 const knex = knexObject(knexConfig);
 
 module.exports = knex;

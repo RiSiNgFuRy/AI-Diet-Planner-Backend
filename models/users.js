@@ -1,5 +1,6 @@
 const knex = require('../libraries/Postgres')
 const crypto = require('crypto');
+const { PythonShell } = require("python-shell")
 
 async function hash(password) {
     return new Promise((resolve, reject) => {
@@ -48,12 +49,34 @@ const getUserDietChartFromDb = (userId) => {
         .where('userid', userId)
 }
 
+const generateUserDietChartFromAi = (age, foodPreference, weight, height, goal, gender) => {
+    let options = {
+        mode: "text",
+        scriptPath: "C:/Users/hp/Desktop/diet-planner",
+        // pythonPath: "C:/Users/hp/AppData/Local/Programs/Python/Python39.exe",
+        args: [age, foodPreference, weight, height, goal, gender]
+    }
+
+    PythonShell.run("test.py", options)
+    .then(res => {
+        if(res){
+            console.log(JSON.parse(res[0]))
+            return res
+        } 
+    }).catch(err => {
+        console.log(err)
+        throw err
+    })
+}
+
+// generateUserDietChartFromAi(22, "Veg", 84, 183, "Healthy", "Male")
+
 const getUserSettingsFromDb = (userId) => {
     return knex('users')
     .where('userid', userId)
     .select(
-        "height(cm)",
-        "weight(kg)",
+        "height_cm",
+        "weight_kg",
         "genderType",
         "age",
         "goal",
@@ -107,5 +130,6 @@ module.exports = {
     registerUserInDb, verifyUserInDb, getUserDietChartFromDb,
     getUserSettingsFromDb, setUserGenderTypeInDb,
     setUserAgeInDb, setUserGoalInDb,
-    setUserHeightAndWeightInDb, setUserFoodPreferenceInDb
+    setUserHeightAndWeightInDb, setUserFoodPreferenceInDb,
+    generateUserDietChartFromAi
 }; 
