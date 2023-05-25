@@ -6,11 +6,54 @@ const genderTypeQuery = require('../models/genderType')
 
 const getUsersDietChart = async(req, res) => {
     const {userId} = req.params
+    const {type} = req.query
     await usersQuery.getUserDietChartFromDb(userId)
-        .then(data => {
-            if(data[0].dietChart == null)
-                generateUsersDietChart(userId)
-            return res.json(data[0].dietChart)
+        .then(async(data) => {
+            if(data[0].dietChart == null || type == "new"){
+                let settingsData = (await usersQuery.getUserSettingsFromDb(userId))[0]
+
+                if(isEmpty(settingsData.age)){
+                    return res.status(401).json({
+                        error: "Age cannot be null"
+                    })
+                }else if(isEmpty(settingsData.weight_kg)){
+                    return res.status(401).json({
+                        error: "Weight cannot be null"
+                    })
+                }else if(isEmpty(settingsData.height_cm)){
+                    return res.status(401).json({
+                        error: "Height cannot be null"
+                    })
+                }
+
+                let foodPreference = await foodPreferencesQuery.getFoodPreferencetypeByIdFromDb(settingsData.foodPreferenceType)
+                    .catch(err => {
+                        console.log(err)
+                        return res.status(401).json({
+                            message: "Unable to get food preference details"
+                        })
+                    })
+
+                let goalValue = await goalTypeQuery.getGoalTypeByIdFromDb(settingsData.goal)
+                    .catch(err => {
+                        console.log(err)
+                        return res.status(401).json({
+                            message: "Unable to get goal details"
+                        })
+                    })
+
+                let gender = await genderTypeQuery.getGenderTypeById(settingsData.genderType)
+                .catch(err => {
+                    console.log(err)
+                    return res.status(401).json({
+                        message: "Unable to get gender details"
+                    })
+                })
+
+                return res.json(JSON.parse(await generateUsersDietChart(userId, settingsData.age, foodPreference[0], settingsData.weight_kg, settingsData.height_cm, goalValue[0], gender[0])))
+            }
+            else
+                return res.json(data[0].dietChart)
         }).catch(err => {
             console.log(err)
             return res.status(401).json({
@@ -19,55 +62,13 @@ const getUsersDietChart = async(req, res) => {
         })   
 }
 
-const generateUsersDietChart = async(userId) => {
-    let {height_cm, weight_kg, genderType, age, goal, foodPreferenceType} = await usersQuery.getUserSettingsFromDb(userId)
-    if(isEmpty(age)){
-        return res.status(401).json({
-            error: "Age cannot left be null"
-        })
-    }else if(isEmpty(weight_kg)){
-        return res.status(401).json({
-            error: "Weight cannot left be null"
-        })
-    }else if(isEmpty(height_cm)){
-        return res.status(401).json({
-            error: "Height cannot left be null"
-        })
-    }
+const generateUsersDietChart = async(userId, age, foodPreference, weight, height, goalValue, gender) => {
 
-    let foodPreference = await foodPreferencesQuery.getFoodPreferencetypeByIdFromDb(foodPreferenceType)
-        .catch(err => {
-            console.log(err)
-            return res.status(401).json({
-                message: "Unable to get food preference details"
-            })
-        })
-
-    let goalValue = await goalTypeQuery.getGoalTypeByIdFromDb(goal)
-        .catch(err => {
-            console.log(err)
-            return res.status(401).json({
-                message: "Unable to get goal details"
-            })
-        })
-
-    let gender = await genderTypeQuery.getGenderTypeById(genderType)
-    .catch(err => {
-        console.log(err)
-        return res.status(401).json({
-            message: "Unable to get gender details"
-        })
-    })
-
-    await usersQuery.generateUserDietChartFromAi(age, foodPreference.type, weight, height, goalValue.type, gender.type)
-        .then(data => {
-            return res.json(data)
-        }).catch(err => {
-            console.log(err)
-            return res.status(401).json({
-                message: "Some error occurred while generating diet chart from AI"
-            })
-        }) 
+    let data =  await usersQuery.generateUserDietChartFromAi(age, foodPreference.type, weight, height, goalValue.type, gender.type)
+    console.log(age +" "+ foodPreference.type +" "+ weight +" "+ height +" "+ goalValue.type +" "+ gender.type)
+    console.log("data: "+data)
+    await usersQuery.setUserDietChartInDb(userId, data)
+    return data
 }
 
 const setUserHeightAndWeight = async(req, res) => {

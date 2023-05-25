@@ -49,27 +49,32 @@ const getUserDietChartFromDb = (userId) => {
         .where('userid', userId)
 }
 
-const generateUserDietChartFromAi = (age, foodPreference, weight, height, goal, gender) => {
+const setUserDietChartInDb = (userId, jsonData) => {
+    return knex("users")
+        .where("userid", userId)
+        .update({
+            "dietChart": JSON.parse(jsonData)
+        })
+}
+
+const generateUserDietChartFromAi = async(age, foodPreference, weight, height, goal, gender) => {
     let options = {
         mode: "text",
         scriptPath: "C:/Users/hp/Desktop/diet-planner",
-        // pythonPath: "C:/Users/hp/AppData/Local/Programs/Python/Python39.exe",
         args: [age, foodPreference, weight, height, goal, gender]
     }
 
-    PythonShell.run("test.py", options)
-    .then(res => {
-        if(res){
-            console.log(JSON.parse(res[0]))
-            return res
-        } 
-    }).catch(err => {
+    let dietChartObj = await PythonShell.run("test.py", options)
+    .catch(err => {
         console.log(err)
         throw err
     })
+
+    // console.log(JSON.parse(dietChartObj[0]))
+    return dietChartObj[0]
 }
 
-// generateUserDietChartFromAi(22, "Veg", 84, 183, "Healthy", "Male")
+generateUserDietChartFromAi(22, "Veg", 84, 183, "Healthy", "Male")
 
 const getUserSettingsFromDb = (userId) => {
     return knex('users')
@@ -129,7 +134,7 @@ const setUserFoodPreferenceInDb = (userId, foodPreferenceId) => {
 module.exports = {
     registerUserInDb, verifyUserInDb, getUserDietChartFromDb,
     getUserSettingsFromDb, setUserGenderTypeInDb,
-    setUserAgeInDb, setUserGoalInDb,
+    setUserAgeInDb, setUserGoalInDb, setUserDietChartInDb,
     setUserHeightAndWeightInDb, setUserFoodPreferenceInDb,
     generateUserDietChartFromAi
 }; 
