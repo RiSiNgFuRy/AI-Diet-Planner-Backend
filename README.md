@@ -1,4 +1,5 @@
 # AI-Diet-Planner-Backend
+[Frontend](https://github.com/RiSiNgFuRy/AI-Diet-Planner-App)
 - Backend for an AI-powered diet planning app which handles server-side code and functionality.
 - Uses **PostgreSQL** for reliable and scalable data storage.
 - Integration of **PythonShell** for Script Execution.
