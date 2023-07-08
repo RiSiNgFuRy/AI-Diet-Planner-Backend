@@ -8,17 +8,24 @@
 - Generates and validates **JSON Web Tokens (JWT)** for secure authentication and authorization.
   
 ## Setup
-1. Change ***scriptPath*** to your python code folder's complete path at **Line 63** in **...\aiDietPlanner_backend\models\users.js** 
+1. Execute commands in command prompt(***admin***) to restore the database:
+   
    ```
-    scriptPath: "[FOLDER_PATH]"
+   cd C:\Program Files\PostgreSQL\11\bin
+   createdb -T template0 database_name
+   pg_restore -d database_name [aiDietPlannerDb.dump file PATH]
    ```
-2. Change file name to your main **.py** file at **Line 67** in **...\aiDietPlanner_backend\models\users.js**
+3. Change ***scriptPath*** to your python code folder's complete path at **Line 63** in **...\aiDietPlanner_backend\models\users.js** 
+   ```
+   scriptPath: "[FOLDER_PATH]"
+   ```
+4. Change file name to your main **.py** file at **Line 67** in **...\aiDietPlanner_backend\models\users.js**
    ```
    let dietChartObj = await PythonShell.run("[FILE_NAME].py", options)
    ```
-3. Enter following commands in IDE terminal simultaneously
+5. Enter following commands in IDE terminal simultaneously
    ```
-    npm install
-    npm start
+   npm install
+   npm start
    ```
-4. Active Port: 3001 (can be changed from **\aiDietPlanner_backend\app.js** file)
+6. Active Port: 3001 (can be changed from **\aiDietPlanner_backend\app.js** file)
