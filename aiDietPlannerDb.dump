@@ -1,0 +1,168 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 15.2
+-- Dumped by pg_dump version 15.2
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: food_preferences_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.food_preferences_type (
+    id uuid NOT NULL,
+    type character varying(30),
+    "mainImgUrl" text,
+    "logoImgUrl" text
+);
+
+
+ALTER TABLE public.food_preferences_type OWNER TO postgres;
+
+--
+-- Name: genders; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.genders (
+    id uuid NOT NULL,
+    type character varying(20),
+    imgurl text
+);
+
+
+ALTER TABLE public.genders OWNER TO postgres;
+
+--
+-- Name: goaltype; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.goaltype (
+    id uuid,
+    type character varying(30)
+);
+
+
+ALTER TABLE public.goaltype OWNER TO postgres;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    userid uuid NOT NULL,
+    email character varying(200) NOT NULL,
+    username character varying(80) NOT NULL,
+    password character varying(255) NOT NULL,
+    "genderType" uuid,
+    "foodPreferenceType" uuid,
+    "dietChart" jsonb,
+    height_cm numeric(3,0),
+    weight_kg numeric(3,0),
+    goal uuid,
+    age numeric(3,0)
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Data for Name: food_preferences_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.food_preferences_type (id, type, "mainImgUrl", "logoImgUrl") FROM stdin;
+11634abb-95f5-46d1-b87c-2c48159f1f2f	Veg	https://cdn-icons-png.flaticon.com/512/2329/2329865.png	https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Indian-vegetarian-mark.svg/2048px-Indian-vegetarian-mark.svg.png
+1c20afb0-111d-44ec-8007-839fca5f4eca	Non-Veg	https://cdn.iconscout.com/icon/free/png-256/non-veg-food-1851554-1569279.png	https://www.nabeeats.com/assets/images/non-veg.png
+\.
+
+
+--
+-- Data for Name: genders; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.genders (id, type, imgurl) FROM stdin;
+0e9e9239-e4ec-4150-a33b-8fd39bf782b9	Male	https://cdn-icons-png.flaticon.com/512/4439/4439947.png
+7ab49589-409d-4337-9c97-a020ea4e2610	Female	https://cdn-icons-png.flaticon.com/512/921/921009.png
+\.
+
+
+--
+-- Data for Name: goaltype; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.goaltype (id, type) FROM stdin;
+2608b49c-08b1-4929-b9b3-ca76c7ac20f5	Weight Loss
+31bf8da0-093d-4a22-b927-18eed265ec4f	Healthy
+a39ce5cb-5d76-4c72-9a9e-ac87d7ff36fd	Weight Gain
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (userid, email, username, password, "genderType", "foodPreferenceType", "dietChart", height_cm, weight_kg, goal, age) FROM stdin;
+52d8e19f-4c8c-44bd-8dd5-79b942428b68	guptapranjal6@gmail.com	pg	286738e784d16756dde29eb9199d27de:3b8583308fa41d6b74c4b8e11d203fd8c1ac5ab73bfd66cb969e2f97ab98c9e0f5fe59ce7e43055ea3c7326b787bc7ca44a43bb090c4f633c17d624d420c1be1	0e9e9239-e4ec-4150-a33b-8fd39bf782b9	11634abb-95f5-46d1-b87c-2c48159f1f2f	{"Lunch": [{"fats": 0.1, "iron": 0.57, "fibre": 1.1, "sodium": 237, "sugars": 2.1, "calcium": 15, "calories": 18, "foodName": "Pumpkin", "proteins": 0.7, "vitamind": 0, "potassium": 230, "carbohydrates": 4.3}, {"fats": 0.5, "iron": 1.27, "fibre": 2.8, "sodium": 56, "sugars": 0.6, "calcium": 118, "calories": 25, "foodName": "Brocolli", "proteins": 3.8, "vitamind": 0, "potassium": 343, "carbohydrates": 3.1}], "Dinner": [{"fats": 8.4, "iron": 0.21, "fibre": 0.9, "sodium": 60, "sugars": 0, "calcium": 120, "calories": 192, "foodName": "Strawberry Icecream", "proteins": 3.2, "vitamind": 0, "potassium": 188, "carbohydrates": 28}, {"fats": 4, "iron": 0.08, "fibre": 0, "sodium": 70, "sugars": 7, "calcium": 183, "calories": 60, "foodName": "Yogurt", "proteins": 3.1, "vitamind": 1, "potassium": 234, "carbohydrates": 7}], "Breakfast": [{"fats": 2.1, "iron": 2.63, "fibre": 11, "sodium": 9, "sugars": 6.3, "calcium": 363, "calories": 93, "foodName": "Grapes", "proteins": 5.6, "vitamind": 0, "potassium": 272, "carbohydrates": 17}, {"fats": 1.9, "iron": 0.04, "fibre": 0, "sodium": 34, "sugars": 3.6, "calcium": 115, "calories": 73, "foodName": "Greek yogurt plain", "proteins": 10, "vitamind": 0, "potassium": 141, "carbohydrates": 3.9}]}	183	84	31bf8da0-093d-4a22-b927-18eed265ec4f	22
+32a28262-6b6a-4b7c-a66b-ca129ad983bb	guptapranjal7@gmail.com	Pranjal Gupta	574041939b4bb97e165af40136685145:13fab68a3961700fc4ec3d2d94c659e55c3062e974c77fc2d0b49e49a56f892013772c561c1b6bbc03cd852d999c24fb2b17593d6d379fae39b5518c023ceb8e	0e9e9239-e4ec-4150-a33b-8fd39bf782b9	11634abb-95f5-46d1-b87c-2c48159f1f2f	\N	183	84	31bf8da0-093d-4a22-b927-18eed265ec4f	23
+dba0dfd1-cfb4-47a5-879a-9300a8c16b98	doejohn8@gmail.com	John Doe	8b0dc3e4516f52f8c3cd7610ce5f6bd7:d9caeea709ec01d18cd6596b0bdbff2bc3f578034073f022614a2a8cd3ba0aa03c22b6386519a80c7284455e6c19c76a533167779f2f085bf5c62d005c1c8ca1	0e9e9239-e4ec-4150-a33b-8fd39bf782b9	11634abb-95f5-46d1-b87c-2c48159f1f2f	{"Lunch": [{"fats": 0.6, "iron": 4.36, "fibre": 1.4, "sodium": 1, "sugars": 0, "calcium": 9, "calories": 360, "foodName": "White Rice", "proteins": 6.6, "vitamind": 0, "potassium": 86, "carbohydrates": 79}, {"fats": 0.3, "iron": 0.72, "fibre": 3.3, "sodium": 259, "sugars": 0, "calcium": 32, "calories": 32, "foodName": "Cauliflower", "proteins": 3, "vitamind": 0, "potassium": 278, "carbohydrates": 6.3}], "Dinner": [{"fats": 8.4, "iron": 0.21, "fibre": 0.9, "sodium": 60, "sugars": 0, "calcium": 120, "calories": 192, "foodName": "Strawberry Icecream", "proteins": 3.2, "vitamind": 0, "potassium": 188, "carbohydrates": 28}, {"fats": 4.2, "iron": 0.1, "fibre": 0.1, "sodium": 403, "sugars": 0.4, "calcium": 56, "calories": 95, "foodName": "Cottage cheese with vegetables", "proteins": 11, "vitamind": 0, "potassium": 86, "carbohydrates": 3}], "Breakfast": [{"fats": 4, "iron": 0.08, "fibre": 0, "sodium": 70, "sugars": 7, "calcium": 183, "calories": 60, "foodName": "Yogurt", "proteins": 3.1, "vitamind": 1, "potassium": 234, "carbohydrates": 7}, {"fats": 0.3, "iron": 0.26, "fibre": 2.6, "sodium": 1, "sugars": 12, "calcium": 5, "calories": 89, "foodName": "Bananas", "proteins": 1.1, "vitamind": 0, "potassium": 358, "carbohydrates": 23}]}	183	81	31bf8da0-093d-4a22-b927-18eed265ec4f	22
+\.
+
+
+--
+-- Name: food_preferences_type food_preferences_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.food_preferences_type
+    ADD CONSTRAINT food_preferences_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: genders genders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.genders
+    ADD CONSTRAINT genders_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: genders type_always_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.genders
+    ADD CONSTRAINT type_always_unique UNIQUE (type);
+
+
+--
+-- Name: users unique_email_address; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT unique_email_address UNIQUE (email);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (userid);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
